@@ -11,13 +11,18 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        wheel_arch: [x86_64, i686]
+        wheel_arch: [x86_64, i686, aarch64]
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
           fetch-depth: 0
+
+      - name: Set up QEMU
+        if: matrix.wheel_arch == 'aarch64'
+        id: qemu
+        uses: docker/setup-qemu-action@v1
 
       - uses: actions/setup-python@v2
         name: Install Python
