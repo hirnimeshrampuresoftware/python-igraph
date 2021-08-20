@@ -11,18 +11,13 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        wheel_arch: [x86_64, i686, aarch64]
+        wheel_arch: [x86_64, i686]
 
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
           fetch-depth: 0
-
-      - name: Set up QEMU
-        if: matrix.wheel_arch == 'aarch64'
-        id: qemu
-        uses: docker/setup-qemu-action@v1
 
       - uses: actions/setup-python@v2
         name: Install Python
@@ -33,7 +28,6 @@ jobs:
         uses: joerick/cibuildwheel@v1.10.0
         env:
           CIBW_BEFORE_BUILD: "yum install -y flex bison libxml2-devel zlib-devel && pip install cmake && python setup.py build_c_core"
-          CIBW_ARCHS: ${{ matrix.wheel_arch }}
           CIBW_BUILD: "*-manylinux_${{ matrix.wheel_arch }}"
 
       - uses: actions/upload-artifact@v2
@@ -173,12 +167,10 @@ jobs:
           python setup.py build_c_core
           python setup.py sdist
           python setup.py install
-
       - name: Test
         run: |
           pip install numpy scipy pandas networkx
           python -m unittest -vvv
-
       - uses: actions/upload-artifact@v2
         with:
           path: dist/*.tar.gz
