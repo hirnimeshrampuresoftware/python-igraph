@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        #wheel_arch: [x86_64, i686, aarch64]
-        wheel_arch: [aarch64]
+        wheel_arch: [x86_64, i686, aarch64]
+        #wheel_arch: [aarch64]
 
     steps:
       - uses: actions/checkout@v2
@@ -33,7 +33,8 @@ jobs:
       - name: Build wheels
         uses: joerick/cibuildwheel@v1.10.0
         env:
-          CIBW_BEFORE_BUILD: "yum install -y flex bison libxml2-devel zlib-devel && pip install cmake && python setup.py build_c_core"
+          CIBW_BEFORE_BUILD: "yum install -y flex bison libxml2-devel zlib-devel && pip install cmake"
+          # && python setup.py build_c_core
           CIBW_ARCHS_LINUX: ${{ matrix.wheel_arch }}
           CIBW_BUILD: "*-manylinux_${{ matrix.wheel_arch }}"
 
