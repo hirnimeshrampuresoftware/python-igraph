@@ -36,7 +36,8 @@ jobs:
 
   build_aarch64_wheels:
     name: Build wheels on Linux AArch64
-    if: github.event_name == 'release' && github.event.action == 'created'
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+    #if: github.event_name == 'release' && github.event.action == 'created'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
